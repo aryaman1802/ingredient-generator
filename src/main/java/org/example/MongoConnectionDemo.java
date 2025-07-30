@@ -62,34 +62,6 @@ public class MongoConnectionDemo {
                         .append("history", new ArrayList<>());
                 users.insertOne(newUser);
 
-//                        // 3) Build a preference/recipes entry:
-//
-//                        Document entry = new Document("timestamp", new Date())
-//                                .append("ingredients", Arrays.asList("chicken"))
-//                                .append("cuisine", "American")
-//                                .append("recipes", Arrays.asList(
-//                                        new Document("title", "Quick noodle omelette")
-//                                                .append("ingredients", Arrays.asList(/* … */)),
-//                                        new Document("title", "Filipino Congee")
-//                                                .append("ingredients", Arrays.asList(/* … */))
-//                                        // add third recipe…
-//                                ));
-
-//                    // 4) Append that entry to the user’s history array:
-//                    users.updateOne(
-//                            Filters.eq("username", "elimliu"),
-//                            Updates.push("history", "Quick noodle omelette\n" +
-//                                    "  - 1 packet Maggi 2 minute noodles (any flavour, but chicken works really well)\n" +
-//                                    "  - 4 Eggs\n" +
-//                                    "  - 1 cup Frozen mixed diced vegetables (eg peas, corn and carrot)\n" +
-//                                    "  - 1/2 cup Diced BBQ chicken\n" +
-//                                    "  - 1/2 cup Grated cheese")
-//                    );
-//                    System.out.println("Saved history entry for user.");
-
-            // 5) Read back the user’s document to verify:
-                Document userDoc = users.find(eq("username", "elimliu")).first();
-                System.out.println(userDoc.toJson());
             } catch (MongoException e) {
                 e.printStackTrace();
             }
