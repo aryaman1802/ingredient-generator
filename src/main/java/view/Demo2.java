@@ -15,7 +15,8 @@ import java.util.*;
 public class Demo2 {
     public static void main(String[] args) throws Exception {
         // 1. Specify the path to your input text file
-        String inputFilePath = "C:/Users/dell/Desktop/UofT/3rd year summer/CSC207/full_proj1/smart-plate-planner/temp1/Preferences.txt";
+//        String inputFilePath = "C:/Users/dell/Desktop/UofT/3rd year summer/CSC207/ingredient-generator/recipes.txt";
+        String inputFilePath = "C:/Users/dell/Desktop/UofT/3rd year summer/CSC207/ingredient-generator/Preferences.txt";
 
         // 2. Read all lines from the file
         List<String> lines = Files.readAllLines(

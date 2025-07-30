@@ -24,7 +24,7 @@ public class MealPreferences extends JFrame{
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         JLabel ingredient = new JLabel("What ingredients would like to include in your meal?" +
-                " (Example: Milk, Egg, Apple)");
+                " (Example: Milk,Egg,Apple)");
         panel.add(ingredient);
 
         //Text to input ingredients
