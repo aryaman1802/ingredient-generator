@@ -241,6 +241,7 @@ Acts as the application entry point. It wires together all layers of the Clean A
 - Provides sample methods to help integrate MongoDB into the application if switching from file-based storage to a database.
 
 ---
+---
 
 ### **use_case/**
 
@@ -330,14 +331,12 @@ Acts as the application entry point. It wires together all layers of the Clean A
 - Allows different implementations (such as `LoginInteractor`) to fulfill the business logic.
 
 ---
+
+#### **signup/**
+
 ---
 
-### **signup/**
-
----
----
-
-#### `SignupInteractor.java`
+##### `SignupInteractor.java`
 
 **Role:** Implements the business logic for user signup. Coordinates between the data layer (user repository), request model, and presenter.
 
@@ -348,7 +347,7 @@ Acts as the application entry point. It wires together all layers of the Clean A
 
 ---
 
-#### `SignupOutputBoundary.java`
+##### `SignupOutputBoundary.java`
 
 **Role:** Defines how the result of the signup use case is communicated to the presentation/UI layer.
 
@@ -358,7 +357,7 @@ Acts as the application entry point. It wires together all layers of the Clean A
 
 ---
 
-#### `SignupRequestModel.java`
+##### `SignupRequestModel.java`
 
 **Role:** Encapsulates the data required to process a signup request.
 
@@ -368,7 +367,7 @@ Acts as the application entry point. It wires together all layers of the Clean A
 
 ---
 
-#### `SignupResponseModel.java`
+##### `SignupResponseModel.java`
 
 **Role:** Encapsulates the result data from the signup process.
 
@@ -378,7 +377,7 @@ Acts as the application entry point. It wires together all layers of the Clean A
 
 ---
 
-#### `SignupUseCase.java`
+##### `SignupUseCase.java`
 
 **Role:** Defines the interface for the signup use-case operations.
 
