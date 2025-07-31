@@ -499,7 +499,7 @@ something...
 
 1. **Clone the Repository:**
 ```bash
-git clone <repository-url>
+git clone https://github.com/aryaman1802/ingredient-generator.git
 cd ingredient-generator
 ```
 
