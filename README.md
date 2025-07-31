@@ -505,6 +505,8 @@ cd ingredient-generator
 
 2. **Run the Application:**
 
+**Note:** Make sure to connect to the MongoDB cluster before running `Main.java`.
+
 Navigate to the project directory and run the `Main.java` file. You can use an IDE like IntelliJ IDEA:
 
 ![run_main](run_app.png "Run Main.java")
