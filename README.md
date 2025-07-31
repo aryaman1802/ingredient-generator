@@ -10,7 +10,7 @@ Members:
 
 ## **Repository Structure**
 
-Below is the structure of the repository, which follows the Clean Architecture principles. The project is organized into different folders, each serving a specific purpose:
+Below is the structure of the repository, which follows the Clean Architecture principles. The project is organized into different folders, each serving a specific purpose. Below is a brief overview of the repository structure containing only the relevant files and directories:
 
 ```bash
 ├── src/main/java/
@@ -65,6 +65,11 @@ Below is the structure of the repository, which follows the Clean Architecture p
 │   │   ├── SignupView.java
 │   │   ├── TopRecipesFrame.java
 │   │   ├── UserProfileFrame.java
+
+├── pom.xml
+├── Preferences.txt
+├── recipes.txt
+├── top_recipes.txt
 ```
 
 
