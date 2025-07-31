@@ -495,7 +495,7 @@ something...
 ---
 ---
 
-## **How to Run the Application**
+## **Application Setup**
 
 1. **Clone the Repository:**
 ```bash
@@ -508,3 +508,78 @@ cd ingredient-generator
 Navigate to the project directory and run the `Main.java` file. You can use an IDE like IntelliJ IDEA:
 
 ![run_main](run_app.png "Run Main.java")
+
+The user of this app will need to setup and sign up for two API accounts:
+
+1. Edamam API
+2. MongoDB
+
+## Linking the code to Edamam API account:
+
+In src/main/java/view/Demo2 file change the following line to the directory of the Preferences.txt file, as shown in the image below:
+
+<img width="500" height="75" alt="edamam directory" src="https://github.com/user-attachments/assets/5a6fe69b-1756-4a52-b4b7-be647035c08c" />
+
+Next, scroll down a bit in the same src/main/java/view/Demo2 file and change the "edamam_username_here" to the edamam username used in your edamam account:
+
+<img width="534" height="80" alt="edamam account" src="https://github.com/user-attachments/assets/c938e256-bfc5-405f-8ec4-fae2c6fbd2a0" />
+
+Great! Now the ingredient_generator application is linked to your edamam account. Next, continue to link the ingredient_generator application to your mongoDB account.
+
+## Linking the code to MongoDB account:
+
+First, request access to ingredient_generator cluster:
+- Sign up for a MongoDB account
+- Email cx33366@gmail.com with:
+  - Subject: “Access request for ingredient_generator”
+  - Body: “I’d like to use the ingredient_generator application. Registered MongoDB email: <your_email>.”
+- Accept invite to **Cluster0** when it arrives
+- After acceptance:
+  - **Username:** the part of your email before “@”
+  - **Password:** `Password`
+- 🔔 Note: The **Cluster0** access password will always be `Password` and it is different from your MongoDB account login password.
+
+Furthermore, if you see the folowing prompt whenever you login to MongoDB, please ALWAYS remember to click **Add Current IP Address** ; 
+or else your ingredient_generator account will not be linked with the MongoDB database and your history will not be saved. :
+
+<img width="809" height="44" alt="IP address" src="https://github.com/user-attachments/assets/75e928fb-46f3-4d48-805d-8f0e92857d6d" />
+
+
+Once the owener has invited you to**Cluster0**, you can link the MongoDB **Cluster0** to your Intellij :
+
+When you login to your mongoDB account, click the **clusters** on the sidebar, then click the connect button next to **Cluster0**:
+
+<img width="672" height="312" alt="cluster0" src="https://github.com/user-attachments/assets/e39f388e-81bc-4780-ac4a-1f7272690cc9" />
+
+Then click on Drivers:
+
+<img width="562" height="214" alt="drivers" src="https://github.com/user-attachments/assets/a82a63ca-9040-45ba-a51a-c5e6ff7ab41e" />
+
+
+Make sure that **Java** is selected under **Driver**, and **5.1 or later** is selected under **Version**. 
+Next copy the link under **3. Add your connection string into your application code** :
+
+<img width="459" height="307" alt="copy" src="https://github.com/user-attachments/assets/1080809e-2cf7-4176-925b-fdafbe9c0369" />
+
+On Intellij, navigate to the top and click: Help -> Find Action -> Database -> Create new data source:
+
+<img width="280" height="316" alt="Database2" src="https://github.com/user-attachments/assets/4f7a730d-7464-4566-bd5a-4bb5c0ab7afd" />
+
+The click Data Source -> MongoDB (should have a leaf logo beside it) and the following screen should pop up:
+
+<img width="603" height="497" alt="data2" src="https://github.com/user-attachments/assets/5592e3b6-873c-468f-bad3-8bee95d8fab7" />
+
+Next, first paste the URL copied from MongoDB in **URL**, then enter your **User:** the part of your email before “@” , and **Password:** `Password` ; the URL must be entered first. 
+Then click on **Test Connection** , when it shows a successful connection, you should see the following screen. Then click on **Apply** and **OK** :
+
+<img width="586" height="494" alt="testc" src="https://github.com/user-attachments/assets/422ac843-2c1e-45ef-9336-d14482c0825d" />
+
+Afterwards navigate to ingredient_generator/main/java/org.example/MongoConnectionDemo and change the following " " line to the URL copied from mongoDB. 
+Change <db_username> to your username (the part of your email before “@”) and <db_password> to Password (password to Cluster0).
+There are a total of 4 instances of this line that needs to be changed in this MongoConnectionDemo file, 
+please make sure that you are able to find and change all 4 instances of this line to match with your **MongoDB username** and **connection password to Cluster0**:
+
+<img width="753" height="180" alt="c1" src="https://github.com/user-attachments/assets/ea3b5ba8-71bc-4b3c-a6db-c3cf4ee04acd" />
+
+That's it! Now **Cluster0** from your MongoDB account should be connected to your IntelliJ. 
+You can now run **Main** and use the **ingredient_generator** application to generate ingredients and see the histories of ingredients that you've generated. Have fun!
