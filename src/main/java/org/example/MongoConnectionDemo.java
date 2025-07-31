@@ -21,6 +21,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -59,7 +61,8 @@ public class MongoConnectionDemo {
                 // 2) Insert a new user (if you haven’t already):
                 Document newUser = new Document("username", username)
                         .append("password", passcode)
-                        .append("history", new ArrayList<>());
+                        .append("history", new ArrayList<>())
+                        .append("timestamp",new ArrayList<>());
                 users.insertOne(newUser);
 
             } catch (MongoException e) {
@@ -95,12 +98,21 @@ public class MongoConnectionDemo {
               // 3) Build a preference/recipes entry:
                 Path path = Paths.get("recipes.txt");
                 String content = Files.readString(path, StandardCharsets.UTF_8);
+                LocalDateTime time = LocalDateTime.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy MMM dd 'at' HH:mm:ss");
+
+                String formattedTime = time.format(formatter);
 
                 // 4) Append that entry to the user’s history array:
                 users.updateOne(
                         eq("username", username),
                         Updates.push("history", content)
                     );
+                users.updateOne(
+                        eq("username", username),
+                        Updates.push("timestamp", formattedTime)
+                );
+
 
             } catch (MongoException e) {
                 e.printStackTrace();
