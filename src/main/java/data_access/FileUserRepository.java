@@ -1,66 +1,65 @@
 package data_access;
 
-import org.example.MongoConnectionDemo;
 import use_case.gateway.UserRepository;
 import entity.RegularUser;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+import org.example.MongoConnectionDemo;
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.ServerApi;
+import com.mongodb.ServerApiVersion;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import org.bson.Document;
+import static com.mongodb.client.model.Filters.eq;
+
 import java.util.Optional;
 
 /**
- * File-based implementation of UserRepository.
- * Saves each user's credentials to its own CSV file under a "users" directory.
- * CSV format per file: username,password
+ * MongoDB-based implementation of UserRepository.
+ * Uses the "users" collection in the "Cluster0" database to store and retrieve credentials.
  */
 public class FileUserRepository implements UserRepository {
-    private final Path usersDir;
+    // Connection string to your MongoDB Atlas cluster
+    private static final String CONNECTION_STRING =
+            "mongodb+srv://elimliu:Password@cluster0.wdexumy.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
-    public FileUserRepository() {
-        usersDir = Paths.get("users");
-        try {
-            Files.createDirectories(usersDir);
-        } catch (IOException e) {
-            throw new RuntimeException("Unable to create users directory", e);
-        }
-    }
-
+    /**
+     * Finds a user by username in MongoDB.
+     * @param username the username to look up
+     * @return Optional containing RegularUser if found, or empty if not
+     */
     @Override
     public Optional<RegularUser> findByUsername(String username) {
-        Path userFile = usersDir.resolve(username + ".csv");
-        if (!Files.exists(userFile)) {
-            return Optional.empty();
-        }
-        try {
-            String line = Files.readString(userFile).trim();
-            String[] parts = line.split(",", -1);
-            if (parts.length < 2) {
+        ServerApi serverApi = ServerApi.builder()
+                .version(ServerApiVersion.V1)
+                .build();
+        MongoClientSettings settings = MongoClientSettings.builder()
+                .applyConnectionString(new ConnectionString(CONNECTION_STRING))
+                .serverApi(serverApi)
+                .build();
+
+        try (MongoClient mongoClient = MongoClients.create(settings)) {
+            MongoDatabase appDb = mongoClient.getDatabase("Cluster0");
+            MongoCollection<Document> users = appDb.getCollection("users");
+
+            Document doc = users.find(eq("username", username)).first();
+            if (doc == null) {
                 return Optional.empty();
             }
-            String user = parts[0];
-            String pass = parts[1];
+            String user = doc.getString("username");
+            String pass = doc.getString("password");
             return Optional.of(new RegularUser(user, pass));
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to read user file for " + username, e);
         }
     }
 
+    /**
+     * Saves a new user to MongoDB by delegating to MongoConnectionDemo.newuser().
+     * @param user the RegularUser containing username and password hash
+     */
     @Override
     public void save(RegularUser user) {
-        Path userFile = usersDir.resolve(user.getUsername() + ".csv");
-        String line = user.getUsername() + "," + user.getPasswordHash();
-        try {
-            Files.writeString(
-                    userFile,
-                    line,
-                    StandardOpenOption.CREATE,
-                    StandardOpenOption.TRUNCATE_EXISTING
-            );
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to save user " + user.getUsername(), e);
-        }
         MongoConnectionDemo.newuser(user.getUsername(), user.getPasswordHash());
     }
 }

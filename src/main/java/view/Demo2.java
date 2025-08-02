@@ -58,7 +58,7 @@ public class Demo2 {
 
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
-        conn.setRequestProperty("Edamam-Account-User", "aryaman1");
+        conn.setRequestProperty("Edamam-Account-User", "cx33366");
 
         try (BufferedReader in = new BufferedReader(
                 new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {

@@ -15,7 +15,7 @@ import view.SignupFrame;
 import javax.swing.SwingUtilities;
 
 /**
- * Application entry point. Wires together Clean Architecture layers for login and sign-up.
+ * Application entry point. Wires together Clean Architecture layers for login and signup.
  */
 public class Main {
     public static void main(String[] args) {
@@ -25,7 +25,7 @@ public class Main {
 
         // Launch Swing UI on the Event Dispatch Thread
         SwingUtilities.invokeLater(() -> {
-            // --- Views ---
+            // Views
             LoginFrame loginFrame   = new LoginFrame();
             SignupFrame signupFrame = new SignupFrame();
 

@@ -1,5 +1,8 @@
 package view;
 
+import entity.RegularUser;
+import org.example.MealPreferences;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
@@ -21,7 +24,7 @@ public class TopRecipesFrame {
     private static final String RECIPES_FILE    = "recipes.txt";
     private static final String OUTPUT_FILENAME = "top_recipes.txt";
 
-    public static void main(String[] args) {
+    public static void main(RegularUser user) {
         SwingUtilities.invokeLater(() -> {
             Map<String,Integer> counts = loadAndCountRecipes(RECIPES_FILE);
 
@@ -83,7 +86,15 @@ public class TopRecipesFrame {
                 recipePanel.add(new JScrollPane(ta));
             }
             frame.add(recipePanel, BorderLayout.CENTER);
+            JButton back = new JButton("Back to Meal Preferences");
+            back.addActionListener(e -> {
+                frame.dispose();
+                new MealPreferences(user);
+            });
 
+            JPanel bottom = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            bottom.add(back);
+            frame.add(bottom, BorderLayout.SOUTH);
             frame.setLocationRelativeTo(null);
             frame.setVisible(true);
 

@@ -1,10 +1,13 @@
 package view;
 
+import entity.RegularUser;
+import org.example.MealPreferences;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class EasterEgg extends JFrame {
-    public EasterEgg() {
+    public EasterEgg(RegularUser user) {
         setTitle("History");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(300,300);
@@ -14,5 +17,15 @@ public class EasterEgg extends JFrame {
         title.setVerticalAlignment(JLabel.CENTER);
         add(title, BorderLayout.NORTH);
 
+        JButton back = new JButton("Back");
+        back.addActionListener(e -> {
+            dispose();
+            new MealPreferences(user);
+        });
+
+        JPanel bottom = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        bottom.add(back);
+        add(bottom, BorderLayout.SOUTH);
+        setLocationRelativeTo(null);
     }
 }
