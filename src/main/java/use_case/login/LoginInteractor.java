@@ -2,12 +2,13 @@ package use_case.login;
 
 import use_case.gateway.UserRepository;
 import entity.RegularUser;
+import javax.swing.JOptionPane;
 import java.util.Objects;
 import java.util.Optional;
 
 /**
  * Interactor for the Login use case.
- * Implements the business logic for authenticating a user.
+ * Authenticates a user.
  */
 public class LoginInteractor implements LoginUseCase {
     private final UserRepository userRepository;
@@ -30,16 +31,19 @@ public class LoginInteractor implements LoginUseCase {
                     userOpt.get()
             ));
         } else {
-            presenter.present(new LoginResponseModel(
-                    false,
+            // Show error popup
+            JOptionPane.showMessageDialog(
+                    null,
                     "Invalid username or password",
-                    null
-            ));
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+
         }
     }
 
     /**
-     * Stub for password verification. Replace with a real hash check later.
+     * Password verification.
      */
     private boolean verifyPassword(String rawPassword, String storedHash) {
         return Objects.equals(rawPassword, storedHash);
