@@ -17,6 +17,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import entity.RegularUser;
+import app.Main;
 
 /**
  * MealDBSwingApp
@@ -41,11 +43,13 @@ public class MealDBSwingApp {
 
     // ---------- Frame 1: Inputs ----------
     static class InputFrame extends JFrame {
+        private final RegularUser user;
+
         private final JTextField ingredientsField = new JTextField();
         private final JComboBox<String> mealTypeBox =
                 new JComboBox<>(new String[]{"Breakfast", "Lunch", "Dinner"});
         private final JComboBox<String> cuisineBox = new JComboBox<>();
-//        private final JComboBox<String> dietBox =
+        //        private final JComboBox<String> dietBox =
 //                new JComboBox<>(new String[]{"Vegetarian", "Non-Vegetarian", "Vegan"});
         private final JComboBox<String> dietBox =
                 new JComboBox<>(new String[]{"None", "Vegetarian", "Non-Vegetarian", "Vegan"});
@@ -54,8 +58,14 @@ public class MealDBSwingApp {
 
         private final JLabel status = new JLabel(" ");
 
-        InputFrame() {
+        // Old call sites still work
+        InputFrame() { this(null); }
+
+        // New constructor that carries the user (so Back can return to ApiChoiceFrame with the same user)
+        InputFrame(RegularUser user) {
             super("Recipe Finder — TheMealDB");
+            this.user = user;
+
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             setSize(760, 420);
             setLocationRelativeTo(null);
@@ -107,17 +117,45 @@ public class MealDBSwingApp {
 //            // ========================= OLD CODE END =========================
 
             // ========================= NEW CODE START =========================
+
+//            JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+//            actions.add(surpriseBtn);
+//            actions.add(searchBtn);
+//            JPanel bottom = new JPanel(new BorderLayout(10, 0));
+//            bottom.add(status, BorderLayout.WEST);
+//            bottom.add(actions, BorderLayout.EAST);
+//            root.add(bottom, BorderLayout.SOUTH);
+//
+//            status.setForeground(new Color(0x555555));
+//            status.setText("Ready. Enter ingredients or click “Surprise Me”.");
+
+            JPanel bottom = new JPanel(new BorderLayout(10, 0));
+
+            // left: status text
+            status.setForeground(new Color(0x555555));
+            status.setText("Ready. Enter ingredients or click “Surprise Me”.");
+            bottom.add(status, BorderLayout.WEST);
+            // ========================= NEW CODE END =========================
+
+            // center: Back button (to API selection)
+            JButton backBtn = new JButton("Back to API Selection");
+            backBtn.addActionListener(e -> {
+                dispose();
+                SwingUtilities.invokeLater(() -> new ApiChoiceFrame(user).setVisible(true));
+            });
+            JPanel center = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+            center.add(backBtn);
+            bottom.add(center, BorderLayout.CENTER);
+
+            // right: action buttons
             JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
             actions.add(surpriseBtn);
             actions.add(searchBtn);
-            JPanel bottom = new JPanel(new BorderLayout(10, 0));
-            bottom.add(status, BorderLayout.WEST);
             bottom.add(actions, BorderLayout.EAST);
-            root.add(bottom, BorderLayout.SOUTH);
 
-            status.setForeground(new Color(0x555555));
-            status.setText("Ready. Enter ingredients or click “Surprise Me”.");
-            // ========================= NEW CODE END =========================
+            root.add(bottom, BorderLayout.SOUTH);
+            // ===== end bottom bar =====
+
 
             // Populate cuisines dynamically from TheMealDB (list.php?a=list), with fallback.
             loadCuisines();

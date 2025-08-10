@@ -7,10 +7,7 @@ import java.io.IOException;
 
 import app.Main;
 import entity.RegularUser;
-import view.Demo2;              // aryaman's code
-import view.EasterEgg;
-import view.HistoryFrame;
-import view.TopRecipesFrame;    // aryaman's code
+import view.*;
 
 public class MealPreferences extends JFrame{
 
@@ -128,13 +125,14 @@ public class MealPreferences extends JFrame{
             });
             buttonPanel.add(submit);
 
-            // Logout button
-            JButton logoutBtn = new JButton("Logout");
-            logoutBtn.addActionListener(e -> {
-                dispose();
-                Main.main(new String[]{});
-            });
-            buttonPanel.add(logoutBtn);
+            // Back button
+
+        JButton backBtn = new JButton("Back to API Selection");
+        backBtn.addActionListener(e -> {
+            dispose(); // close this window
+            SwingUtilities.invokeLater(() -> new ApiChoiceFrame(user).setVisible(true));
+        });
+        buttonPanel.add(backBtn);
 
             add(buttonPanel, BorderLayout.SOUTH);
             setLocationRelativeTo(null);
