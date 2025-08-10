@@ -17,6 +17,7 @@ public class Demo3 {
 
     // TheMealDB free dev key "1" (sufficient for this use-case)
     private static final String BASE = "https://www.themealdb.com/api/json/v1/1/";
+    private static final com.fasterxml.jackson.databind.ObjectMapper MAPPER = new com.fasterxml.jackson.databind.ObjectMapper();
 
     public static void main(String[] args) throws Exception {
         // 1) Read Preferences.txt from project directory (same as your original program)
@@ -178,7 +179,7 @@ public class Demo3 {
     }
 
     // Basic GET
-    private static JsonNode getJson(String url, ObjectMapper mapper) throws Exception {
+    private static JsonNode getJson(String url) throws Exception {
         HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
         conn.setConnectTimeout(15000);
         conn.setReadTimeout(30000);
@@ -187,7 +188,7 @@ public class Demo3 {
                 new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
             StringBuilder sb = new StringBuilder();
             for (String line; (line = br.readLine()) != null; ) sb.append(line);
-            return mapper.readTree(sb.toString());
+            return MAPPER.readTree(sb.toString());
         }
     }
 
@@ -196,7 +197,7 @@ public class Demo3 {
         String q = query == null ? "" : query.trim();
         if (q.isEmpty()) return List.of();
         String url = BASE + "search.php?s=" + URLEncoder.encode(q, StandardCharsets.UTF_8);
-        JsonNode root = getJson(url, mapper);
+        JsonNode root = getJson(url);
         JsonNode arr = root.path("meals");
         if (arr.isMissingNode() || arr.isNull()) return List.of();
         List<JsonNode> out = new ArrayList<>();
@@ -207,7 +208,7 @@ public class Demo3 {
     // Search by first letter -> full details list
     private static List<JsonNode> searchByFirstLetter(String letter, ObjectMapper mapper) throws Exception {
         String url = BASE + "search.php?f=" + URLEncoder.encode(letter, StandardCharsets.UTF_8);
-        JsonNode root = getJson(url, mapper);
+        JsonNode root = getJson(url);
         JsonNode arr = root.path("meals");
         if (arr.isMissingNode() || arr.isNull()) return List.of();
         List<JsonNode> out = new ArrayList<>();
@@ -220,8 +221,8 @@ public class Demo3 {
         String q = ingredient.trim().toLowerCase();
         if (q.isEmpty()) return Set.of();
         String url = BASE + "filter.php?i=" + URLEncoder.encode(q, StandardCharsets.UTF_8);
-        JsonNode root = new ObjectMapper().readTree(new ObjectMapper().writeValueAsString(getJson(url, new ObjectMapper())));
-        root = getJson(url, new ObjectMapper());
+        JsonNode root = new ObjectMapper().readTree(new ObjectMapper().writeValueAsString(getJson(url)));
+        root = getJson(url);
         JsonNode arr = root.path("meals");
         if (arr.isMissingNode() || arr.isNull()) return Set.of();
         Set<String> ids = new LinkedHashSet<>();
@@ -231,7 +232,7 @@ public class Demo3 {
 
     private static Set<String> filterByArea(String area) throws Exception {
         String url = BASE + "filter.php?a=" + URLEncoder.encode(area, StandardCharsets.UTF_8);
-        JsonNode root = getJson(url, new ObjectMapper());
+        JsonNode root = getJson(url);
         JsonNode arr = root.path("meals");
         if (arr.isMissingNode() || arr.isNull()) return Set.of();
         Set<String> ids = new LinkedHashSet<>();
@@ -241,7 +242,7 @@ public class Demo3 {
 
     private static Set<String> filterByCategory(String category) throws Exception {
         String url = BASE + "filter.php?c=" + URLEncoder.encode(category, StandardCharsets.UTF_8);
-        JsonNode root = getJson(url, new ObjectMapper());
+        JsonNode root = getJson(url);
         JsonNode arr = root.path("meals");
         if (arr.isMissingNode() || arr.isNull()) return Set.of();
         Set<String> ids = new LinkedHashSet<>();
@@ -251,7 +252,7 @@ public class Demo3 {
 
     private static JsonNode lookupById(String id, ObjectMapper mapper) throws Exception {
         String url = BASE + "lookup.php?i=" + URLEncoder.encode(id, StandardCharsets.UTF_8);
-        JsonNode root = getJson(url, mapper);
+        JsonNode root = getJson(url);
         JsonNode arr = root.path("meals");
         if (arr.isMissingNode() || arr.isNull() || arr.size() == 0) return null;
         return arr.get(0);
