@@ -52,6 +52,9 @@ public class MealDBSwingApp {
         private final JButton searchBtn = new JButton("Search Recipes");
         private final JButton surpriseBtn = new JButton("Surprise Me");
 
+        // Clean seam: port for data operations (keeps behavior the same)
+        private final RecipeGateway gateway = new DefaultRecipeGateway();
+
         private final JLabel status = new JLabel(" ");
 
         InputFrame() {
@@ -149,41 +152,11 @@ public class MealDBSwingApp {
             // Run the heavy work off the EDT
             new SwingWorker<List<Recipe>, Void>() {
                 @Override protected List<Recipe> doInBackground() throws Exception {
-                    // 1) Write Preferences.txt (3 lines as expected by Demo3)
-                    Path prefs = Paths.get("Preferences.txt");
-                    List<String> lines = List.of(query, mealType, cuisine);
-                    Files.write(prefs, lines, StandardCharsets.UTF_8,
-                            StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-
-                    // 2) Call Demo3.main(String[]), regardless of its package (via reflection).
-                    try {
-                        Class<?> demo3 = Class.forName("Demo3"); // if it’s in a package, adjust to "your.pkg.Demo3"
-                        demo3.getMethod("main", String[].class)
-                                .invoke(null, (Object) new String[]{}); // pass empty args
-                    } catch (ClassNotFoundException cnf) {
-                        // Try common package names you might have used; otherwise, rethrow
-                        try {
-                            Class<?> demo3 = Class.forName("view.Demo3");
-                            demo3.getMethod("main", String[].class)
-                                    .invoke(null, (Object) new String[]{});
-                        } catch (Exception inner) {
-                            throw new RuntimeException("Could not find Demo3.class on classpath. " +
-                                    "Place MealDBSwingApp and Demo3 in the same project/module.", inner);
-                        }
-                    }
-
-                    // 3) Parse recipes.txt written by Demo3
-                    Path out = Paths.get("recipes.txt");
-                    if (!Files.exists(out)) {
-                        throw new FileNotFoundException("recipes.txt not found after Demo3 run.");
-                    }
-                    List<Recipe> all = parseRecipesTxt(Files.readAllLines(out, StandardCharsets.UTF_8));
-
-                    // 4) Apply dietary filter & limit to top 3
-                    Diet desired = Diet.fromLabel(diet);
-                    List<Recipe> filtered = filterByDiet(all, desired);
-                    if (filtered.size() > 3) filtered = filtered.subList(0, 3);
-                    return filtered;
+                    String query = ingredientsField.getText().trim();
+                    String mealType = (String) mealTypeBox.getSelectedItem();
+                    String cuisine = (String) cuisineBox.getSelectedItem();
+                    String diet = (String) dietBox.getSelectedItem();
+                    return gateway.search(query, mealType, cuisine, Diet.fromLabel(diet));
                 }
 
                 @Override protected void done() {
@@ -216,7 +189,7 @@ public class MealDBSwingApp {
 
             new SwingWorker<Recipe, Void>() {
                 @Override protected Recipe doInBackground() throws Exception {
-                    return fetchRandomRecipe(); // calls https://www.themealdb.com/api/json/v1/1/random.php
+                    return gateway.fetchRandom();
                 }
 
                 @Override protected void done() {
@@ -264,6 +237,56 @@ public class MealDBSwingApp {
             }
         }
     }
+
+// ---------- Minimal Clean-Architecture seam: Gateway ----------
+/**
+ * A tiny port for recipe operations. The default implementation wraps the existing
+ * Demo3 + parsing logic (for search) and the TheMealDB random endpoint (for surprise).
+ * UI code calls this instead of hard-wiring the details.
+ */
+interface RecipeGateway {
+    List<Recipe> search(String query, String mealType, String cuisine, Diet diet) throws Exception;
+    Recipe fetchRandom() throws Exception;
+}
+
+/** Default adapter that preserves the original behavior exactly. */
+static final class DefaultRecipeGateway implements RecipeGateway {
+    @Override
+    public List<Recipe> search(String query, String mealType, String cuisine, Diet diet) throws Exception {
+        // 1) Write Preferences.txt (3 lines as expected by Demo3)
+        Path prefs = Paths.get("Preferences.txt");
+        List<String> lines = List.of(query, mealType, cuisine);
+        Files.write(prefs, lines, StandardCharsets.UTF_8,
+                StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+
+        // 2) Call Demo3.main(String[]), regardless of its package (via reflection).
+        try {
+            Class<?> demo3 = Class.forName("Demo3");
+            demo3.getMethod("main", String[].class).invoke(null, (Object) new String[]{});
+        } catch (ClassNotFoundException cnf) {
+            Class<?> demo3 = Class.forName("view.Demo3");
+            demo3.getMethod("main", String[].class).invoke(null, (Object) new String[]{});
+        }
+
+        // 3) Parse recipes.txt written by Demo3
+        Path out = Paths.get("recipes.txt");
+        if (!Files.exists(out)) {
+            throw new FileNotFoundException("recipes.txt not found after Demo3 run.");
+        }
+        List<Recipe> all = parseRecipesTxt(Files.readAllLines(out, StandardCharsets.UTF_8));
+
+        // 4) Apply dietary filter & limit to top 3
+        List<Recipe> filtered = filterByDiet(all, diet);
+        if (filtered.size() > 3) filtered = filtered.subList(0, 3);
+        return filtered;
+    }
+
+    @Override
+    public Recipe fetchRandom() throws Exception {
+        // Reuse the original helper to keep behavior
+        return fetchRandomRecipe();
+    }
+}
 
     // ---------- Frame 2: Results ----------
     static class ResultsFrame extends JFrame {
