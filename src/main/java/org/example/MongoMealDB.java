@@ -10,27 +10,26 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Updates;
+import entity.Recipe;
 import entity.RegularUser;
 import org.bson.Document;
-import view.TopRecipesFrame;
+import view.MealDBSwingApp;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.mongodb.client.model.Filters.eq;
 
-public class MongoConnectionDemo {
-    public static void main(String[] args) {
-    }
+public class MongoMealDB {
 
-    public static void newuser(String username, String passcode) {
+    public static void mealEntry(String username, Boolean isSurprise){
         String connectionString = "mongodb+srv://cx33366:Password@cluster0.wdexumy.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
         ServerApi serverApi = ServerApi.builder()
@@ -54,47 +53,7 @@ public class MongoConnectionDemo {
                 MongoDatabase appDb = mongoClient.getDatabase("Cluster0");
                 MongoCollection<Document> users = appDb.getCollection("users");
 
-                // 2) Insert a new user (if you haven’t already):
-                Document newUser = new Document("username", username)
-                        .append("password", passcode)
-                        .append("history", new ArrayList<>())
-                        .append("history1", new ArrayList<>())
-                        .append("timestamp", new ArrayList<>())
-                        .append("timestamp1", new ArrayList<>())
-                        .append("isSurprise", new ArrayList<>());
-                users.insertOne(newUser);
-
-            } catch (MongoException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public static void mealEntry(String username){
-        String connectionString = "mongodb+srv://cx33366:Password@cluster0.wdexumy.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-
-        ServerApi serverApi = ServerApi.builder()
-                .version(ServerApiVersion.V1)
-                .build();
-
-        MongoClientSettings settings = MongoClientSettings.builder()
-                .applyConnectionString(new ConnectionString(connectionString))
-                .serverApi(serverApi)
-                .build();
-
-        // Create a new client and connect to the server
-        try (MongoClient mongoClient = MongoClients.create(settings)) {
-            try {
-                // Send a ping to confirm a successful connection
-                MongoDatabase database = mongoClient.getDatabase("admin");
-                database.runCommand(new Document("ping", 1));
-                System.out.println("Pinged your deployment. You successfully connected to MongoDB!");
-
-                // 1) Open your application database and the "users" collection:
-                MongoDatabase appDb = mongoClient.getDatabase("Cluster0");
-                MongoCollection<Document> users = appDb.getCollection("users");
-
-              // 3) Build a preference/recipes entry:
+                // 3) Build a preference/recipes entry:
                 Path path = Paths.get("recipes.txt");
                 String content = Files.readString(path, StandardCharsets.UTF_8);
                 LocalDateTime time = LocalDateTime.now();
@@ -106,12 +65,17 @@ public class MongoConnectionDemo {
                 // 4) Append that entry to the user’s history array:
                 users.updateOne(
                         eq("username", username),
-                        Updates.push("history",content)
+                        Updates.push("history1",content)
                 );
 
                 users.updateOne(
                         eq("username", username),
-                        Updates.push("timestamp",formattedTime)
+                        Updates.push("timestamp1",formattedTime)
+                );
+
+                users.updateOne(
+                        eq("username", username),
+                        Updates.push("isSurprise",isSurprise)
                 );
 
             } catch (MongoException e) {
@@ -147,7 +111,7 @@ public class MongoConnectionDemo {
                 Document person = appDb.getCollection("users").find((eq("username", user.getUsername())))
                         .first();
                 assert person != null;
-                List<String> history = person.getList("history", String.class);
+                List<String> history = person.getList("history1", String.class);
 
                 return history.size();
 
@@ -183,21 +147,33 @@ public class MongoConnectionDemo {
                 Document person = appDb.getCollection("users").find((eq("username", user.getUsername())))
                         .first();
                 assert person != null;
-                List<String> history = person.getList("history", String.class);
+                List<String> history = person.getList("history1", String.class);
                 String data = history.get(num);
+
                 Path out = Paths.get("recipes.txt");
                 Files.writeString(
                         out,
                         data,
                         StandardCharsets.UTF_8
                 );
-                TopRecipesFrame.main(user);
+                if (!Files.exists(out)) {
+                    throw new FileNotFoundException("recipes.txt not found after Demo3 run.");
+                }
+                List<MealDBSwingApp.Recipe> all = MealDBSwingApp.parseRecipesTxt(Files.readAllLines(out, StandardCharsets.UTF_8));
+
+                List<Boolean> booList = person.getList("isSurprise", Boolean.class);
+                Boolean boo = booList.get(num);
+
+                new MealDBSwingApp.ResultsFrame(all, boo).setVisible(true);
 
             } catch (MongoException e) {
                 e.printStackTrace();
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
     }
 }
+

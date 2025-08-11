@@ -44,7 +44,7 @@ public class ApiChoiceFrame extends JFrame {
         ));
         columns.add(makeOptionPanel(
                 mealDbBtn = makeSmallButton("Full Recipe", () -> {
-                    new MealDBSwingApp.InputFrame().setVisible(true);
+                    new MealDBSwingApp.InputFrame(user).setVisible(true);
                     dispose();
                 }),
                 "<html><b><span style='color:#000'>Ingredients with Recipe</span></b></html>"

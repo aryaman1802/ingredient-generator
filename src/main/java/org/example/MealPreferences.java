@@ -35,7 +35,7 @@ public class MealPreferences extends JFrame{
         //Text to input ingredients
         JTextArea textArea = new JTextArea();
         panel.add(textArea);
-        textArea.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
+        textArea.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
         textArea.setBorder(BorderFactory.createLineBorder(Color.black));
 
         //Space to separate the fields

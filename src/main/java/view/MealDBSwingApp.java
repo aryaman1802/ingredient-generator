@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import entity.RegularUser;
 import app.Main;
+import org.example.MongoMealDB;
 
 /**
  * MealDBSwingApp
@@ -33,13 +34,6 @@ import app.Main;
  * NOTE: Adjust look & feel or fonts to match your project.
  */
 public class MealDBSwingApp {
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            setNiceDefaults();
-            new InputFrame().setVisible(true);
-        });
-    }
 
     // ---------- Frame 1: Inputs ----------
     static class InputFrame extends JFrame {
@@ -59,7 +53,7 @@ public class MealDBSwingApp {
         private final JLabel status = new JLabel(" ");
 
         // Old call sites still work
-        InputFrame() { this(null); }
+        //InputFrame() { this(null); }
 
         // New constructor that carries the user (so Back can return to ApiChoiceFrame with the same user)
         InputFrame(RegularUser user) {
@@ -143,7 +137,17 @@ public class MealDBSwingApp {
                 dispose();
                 SwingUtilities.invokeLater(() -> new ApiChoiceFrame(user).setVisible(true));
             });
+
+            //Adding history button and making it so that once clicked the history frame opens
+            JButton history = new JButton("History");
+            history.addActionListener(e -> {
+                RecipeHistory historyFrame = new RecipeHistory(user);
+                historyFrame.setVisible(true);
+                dispose();
+            });
+
             JPanel center = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+            center.add(history);
             center.add(backBtn);
             bottom.add(center, BorderLayout.CENTER);
 
@@ -245,6 +249,7 @@ public class MealDBSwingApp {
                     }
                 }
             }.execute();
+            MongoMealDB.mealEntry(user.getUsername(),Boolean.FALSE);
         }
 
         private void onSurprise(ActionEvent e) {
@@ -273,6 +278,7 @@ public class MealDBSwingApp {
                     }
                 }
             }.execute();
+            MongoMealDB.mealEntry(user.getUsername(),Boolean.TRUE);
         }
 
         private void loadCuisines() {
@@ -304,8 +310,8 @@ public class MealDBSwingApp {
     }
 
     // ---------- Frame 2: Results ----------
-    static class ResultsFrame extends JFrame {
-        ResultsFrame(List<Recipe> recipes, boolean isSurprise) {
+    public static class ResultsFrame extends JFrame {
+        public ResultsFrame(List<Recipe> recipes, boolean isSurprise) {
             super(isSurprise ? "Surprise Recipe" : "Top Recipes");
             setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             setSize(1000, 700);
@@ -416,7 +422,7 @@ public class MealDBSwingApp {
     }
 
 
-    static class Recipe {
+    public static class Recipe {
         String name;
         String area; // cuisine (only shown for Surprise)
         List<String> ingredients = new ArrayList<>();
@@ -439,7 +445,7 @@ public class MealDBSwingApp {
     // 1. step
     // 2. step
     // <blank line>
-    private static List<Recipe> parseRecipesTxt(List<String> lines) {
+    public static List<Recipe> parseRecipesTxt(List<String> lines) {
         List<Recipe> out = new ArrayList<>();
         Recipe cur = null;
         boolean inInstr = false;
@@ -569,7 +575,7 @@ public class MealDBSwingApp {
         return r;
     }
 
-    private static List<String> splitSteps(String instructions) {
+    public static List<String> splitSteps(String instructions) {
         if (instructions == null) return List.of();
         String norm = instructions.replace("\r", "\n").trim();
         // Try blank-line split first
