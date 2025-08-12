@@ -69,7 +69,7 @@ public class MealPreferences extends JFrame {
         // --- Footer: status (centered) row + buttons row ---
         JPanel footer = new JPanel(new BorderLayout(8, 0));
 
-        JLabel status = new JLabel("Enter Preferences and click \"Search Ingredients\".", SwingConstants.CENTER);
+        JLabel status = new JLabel("Enter Preferences and/or click \"Search Ingredients\".", SwingConstants.CENTER);
         status.setForeground(new Color(0x555555));
         JPanel statusRow = new JPanel(new BorderLayout());
         statusRow.add(status, BorderLayout.CENTER);
