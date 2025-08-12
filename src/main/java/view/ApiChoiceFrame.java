@@ -29,7 +29,7 @@ public class ApiChoiceFrame extends JFrame {
         root.setBorder(new EmptyBorder(16, 16, 16, 16));
         setContentPane(root);
 
-        JLabel title = new JLabel("Pick an application", SwingConstants.CENTER);
+        JLabel title = new JLabel("Pick an Application", SwingConstants.CENTER);
         title.setFont(title.getFont().deriveFont(Font.BOLD, 16f));
         root.add(title, BorderLayout.NORTH);
 
@@ -40,7 +40,7 @@ public class ApiChoiceFrame extends JFrame {
                     new MealPreferences(user).setVisible(true);
                     dispose();
                 }),
-                "<html><b><span style='color:#000'>Only generates ingredients</span></b></html>"
+                "<html><b><span style='color:#000'>Only Generates Ingredients</span></b></html>"
         ));
         columns.add(makeOptionPanel(
                 mealDbBtn = makeSmallButton("Full Recipe", () -> {

@@ -20,6 +20,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import entity.RegularUser;
 import app.Main;
 import org.example.MongoMealDB;
+import view.ApiChoiceFrame;
+import javax.swing.SwingUtilities;
 
 /**
  * MealDBSwingApp
@@ -68,7 +70,7 @@ public class MealDBSwingApp {
             root.setBorder(new EmptyBorder(16, 16, 16, 16));
             setContentPane(root);
 
-            JLabel title = new JLabel("Find recipes by ingredients, meal type, and cuisine");
+            JLabel title = new JLabel("Find Recipes by Ingredients, Meal Type, and Cuisine");
             title.setFont(title.getFont().deriveFont(Font.BOLD, 18f));
             root.add(title, BorderLayout.NORTH);
 
@@ -79,7 +81,7 @@ public class MealDBSwingApp {
             gc.fill = GridBagConstraints.HORIZONTAL;
 
             // Ingredients (with example)
-            JLabel ingredientsLbl = new JLabel("Broad ingredients (comma-separated):");
+            JLabel ingredientsLbl = new JLabel("Broad Ingredients (comma-separated):");
             JLabel example = new JLabel("Example: chicken, garlic, onion");
             example.setFont(example.getFont().deriveFont(Font.ITALIC));
             gc.gridx = 0; gc.gridy = 0; gc.weightx = 0; form.add(ingredientsLbl, gc);
@@ -87,17 +89,17 @@ public class MealDBSwingApp {
             gc.gridx = 1; gc.gridy = 1; gc.weightx = 1; form.add(example, gc);
 
             // Meal type
-            JLabel mealLbl = new JLabel("Meal type:");
+            JLabel mealLbl = new JLabel("Meal Type:");
             gc.gridx = 0; gc.gridy = 2; gc.weightx = 0; form.add(mealLbl, gc);
             gc.gridx = 1; gc.gridy = 2; gc.weightx = 1; form.add(mealTypeBox, gc);
 
             // Cuisine
-            JLabel cuisineLbl = new JLabel("Cuisine type:");
+            JLabel cuisineLbl = new JLabel("Cuisine Type:");
             gc.gridx = 0; gc.gridy = 3; gc.weightx = 0; form.add(cuisineLbl, gc);
             gc.gridx = 1; gc.gridy = 3; gc.weightx = 1; form.add(cuisineBox, gc);
 
             // Diet
-            JLabel dietLbl = new JLabel("Dietary restriction:");
+            JLabel dietLbl = new JLabel("Dietary Restriction:");
             gc.gridx = 0; gc.gridy = 4; gc.weightx = 0; form.add(dietLbl, gc);
             gc.gridx = 1; gc.gridy = 4; gc.weightx = 1; form.add(dietBox, gc);
 
@@ -123,22 +125,27 @@ public class MealDBSwingApp {
 //            status.setForeground(new Color(0x555555));
 //            status.setText("Ready. Enter ingredients or click “Surprise Me”.");
 
-            JPanel bottom = new JPanel(new BorderLayout(10, 0));
 
-            // left: status text
+            // ===== footer: status row (top) + buttons row (bottom) =====
+            JPanel footer = new JPanel(new BorderLayout(8, 0));
+
             status.setForeground(new Color(0x555555));
-            status.setText("Ready. Enter ingredients or click “Surprise Me”.");
-            bottom.add(status, BorderLayout.WEST);
-            // ========================= NEW CODE END =========================
+            status.setText("Enter Ingredients or click \"Surprise Me\".");
+            status.setHorizontalAlignment(SwingConstants.CENTER); // center the text
 
-            // center: Back button (to API selection)
+            JPanel statusRow = new JPanel(new BorderLayout());
+            statusRow.add(status, BorderLayout.CENTER);           // center in the row
+            statusRow.setBorder(new EmptyBorder(0, 0, 6, 0));     // a little space above buttons
+
+            footer.add(statusRow, BorderLayout.NORTH);
+
+// create buttons
             JButton backBtn = new JButton("Back to API Selection");
             backBtn.addActionListener(e -> {
                 dispose();
                 SwingUtilities.invokeLater(() -> new ApiChoiceFrame(user).setVisible(true));
             });
 
-            //Adding history button and making it so that once clicked the history frame opens
             JButton history = new JButton("History");
             history.addActionListener(e -> {
                 RecipeHistory historyFrame = new RecipeHistory(user);
@@ -146,19 +153,55 @@ public class MealDBSwingApp {
                 dispose();
             });
 
-            JPanel center = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
-            center.add(history);
-            center.add(backBtn);
-            bottom.add(center, BorderLayout.CENTER);
+// bottom row: all four buttons centered
+            JPanel buttonsRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 0));
+            buttonsRow.add(history);
+            buttonsRow.add(backBtn);
+            buttonsRow.add(surpriseBtn);
+            buttonsRow.add(searchBtn);
+            footer.add(buttonsRow, BorderLayout.SOUTH);
 
-            // right: action buttons
-            JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-            actions.add(surpriseBtn);
-            actions.add(searchBtn);
-            bottom.add(actions, BorderLayout.EAST);
+// attach footer at the very bottom of the window
+            root.add(footer, BorderLayout.SOUTH);
+// ===== end footer =====
 
-            root.add(bottom, BorderLayout.SOUTH);
-            // ===== end bottom bar =====
+
+//            JPanel bottom = new JPanel(new BorderLayout(2, 0));
+//
+//            // left: status text
+//            status.setForeground(new Color(0x555555));
+//            status.setText("Enter ingredients or click “Surprise Me”.");
+//            bottom.add(status, BorderLayout.WEST);
+//            // ========================= NEW CODE END =========================
+//
+//            // center: Back button (to API selection)
+//            JButton backBtn = new JButton("Back to API Selection");
+//            backBtn.addActionListener(e -> {
+//                dispose();
+//                SwingUtilities.invokeLater(() -> new ApiChoiceFrame(user).setVisible(true));
+//            });
+//
+//            //Adding history button and making it so that once clicked the history frame opens
+//            JButton history = new JButton("History");
+//            history.addActionListener(e -> {
+//                RecipeHistory historyFrame = new RecipeHistory(user);
+//                historyFrame.setVisible(true);
+//                dispose();
+//            });
+//
+//            JPanel center = new JPanel(new FlowLayout(FlowLayout.CENTER, 2, 0));
+//            center.add(history);
+//            center.add(backBtn);
+//            bottom.add(center, BorderLayout.CENTER);
+//
+//            // right: action buttons
+//            JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, 2, 0));
+//            actions.add(surpriseBtn);
+//            actions.add(searchBtn);
+//            bottom.add(actions, BorderLayout.EAST);
+//
+//            root.add(bottom, BorderLayout.SOUTH);
+//            // ===== end bottom bar =====
 
 
             // Populate cuisines dynamically from TheMealDB (list.php?a=list), with fallback.
