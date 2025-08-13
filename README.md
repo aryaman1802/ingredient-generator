@@ -497,7 +497,8 @@ something...
 ## **Universal Design Principles**
 
 - **Perceptible Information:** Clear labels for every input, included instructions on how our app is used, such as “Enter ingredients or click ‘Surprise Me’.”), and error feedback via dialogs (e.g., *Invalid username or password*). Kept consistent form layouts across **MealPreferences** and **MealDB** screens.
-- **Tolerance for Error:** Safe navigation and recovery—*Back to API Selection* , *Logout* from selector, and *Back* in the history frame. We also display *No recipes matched your criteria* if no recipes were found. Failed network calls also show readable errors instead of crashing the app.
+- **Low Physical Effort:** Safe navigation and recovery—*Back to API Selection* , *Logout* from selector, and *Back* in the history frame. 
+- **Tolerance for Error:** Display *No recipes matched your criteria* if no recipes were found. Failed network calls in the backend also show readable errors instead of crashing the app.
 
 ## Target Audience & Disadvantaged Groups
 - **Target Users:** Students and busy home cooks who want quick meal ideas by ingredients/cuisine.
