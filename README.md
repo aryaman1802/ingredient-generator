@@ -494,6 +494,18 @@ something...
 ---
 ---
 ---
+## **Universal Design Principles**
+
+## Principles we applied
+- **Perceptible Information:** Clear labels for every input, included instructions on how our app is used, such as “Enter ingredients or click ‘Surprise Me’.”), and error feedback via dialogs (e.g., *Invalid username or password*). Kept consistent form layouts across **MealPreferences** and **MealDB** screens.
+- **Tolerance for Error:** Safe navigation and recovery—*Back to API Selection* , *Logout* from selector, and *Back* in the history frame. We also display *No recipes matched your criteria* if no recipes were found. Failed network calls also show readable errors instead of crashing the app.
+
+## Audience & current gaps
+- **Target users:** Students and busy home cooks who want quick meal ideas by ingredients/cuisine.
+- **May be underserved today:** People with visual impairment who may have trouble reading screens or smaller text, non‑English speakers (English-only labels), and users without reliable internet since both Edamam and TheMealDB require online access.
+
+
+---
 
 ## **Application Setup**
 
