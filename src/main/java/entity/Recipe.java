@@ -1,21 +1,37 @@
+//package entity;
+//
+//import java.util.List;
+//
+//public class Recipe {
+//    private final String label;
+//    private final List<String> ingredientLines;
+//
+//    public Recipe(String label, List<String> ingredientLines) {
+//        this.label = label;
+//        this.ingredientLines = List.copyOf(ingredientLines);
+//    }
+//
+//    public String getLabel() {
+//        return label;
+//    }
+//
+//    public List<String> getIngredientLines() {
+//        return ingredientLines;
+//    }
+//}
+
+
 package entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Recipe {
-    private final String label;
-    private final List<String> ingredientLines;
-
-    public Recipe(String label, List<String> ingredientLines) {
-        this.label = label;
-        this.ingredientLines = List.copyOf(ingredientLines);
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public List<String> getIngredientLines() {
-        return ingredientLines;
-    }
+    public String name;
+    public String area; // cuisine / area (optional)
+    public String category;            // e.g., "Breakfast"  (NEW)
+    public List<String> ingredients = new ArrayList<>();     // measure + ingredient lines (for display)
+    public List<String> rawIngredients = new ArrayList<>();  // normalized ingredient names (NEW, for scoring)
+    public List<String> instructions = new ArrayList<>();
+    public Diet diet = Diet.NON_VEGETARIAN;
 }

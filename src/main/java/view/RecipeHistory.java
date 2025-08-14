@@ -1,8 +1,9 @@
 package view;
 
 import entity.RegularUser;
+import org.example.MongoMealDB;
+import entity.RegularUser;
 import view.MealPreferences;
-import org.example.MongoConnectionDemo;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoException;
@@ -22,9 +23,9 @@ import java.awt.*;
 
 import static javax.swing.BoxLayout.Y_AXIS;
 
-public class HistoryFrame extends JFrame {
+public class RecipeHistory extends JFrame {
 
-    public HistoryFrame(RegularUser user) {
+    public RecipeHistory(RegularUser user) {
         //Making the main frame
         setTitle("History");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -32,7 +33,7 @@ public class HistoryFrame extends JFrame {
         setLayout(new BorderLayout());
 
         //Gets the amount of times the user has generated recipes
-        int size = MongoConnectionDemo.numEntry(user);
+        int size = MongoMealDB.numEntry(user);
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, Y_AXIS));
@@ -62,21 +63,20 @@ public class HistoryFrame extends JFrame {
                 Document person = appDb.getCollection("users").find((eq("username", user.getUsername())))
                         .first();
                 assert person != null;
-                List<String> time = person.getList("timestamp", String.class);
+                List<String> time = person.getList("timestamp1", String.class);
 
                 //Loops through all the timestamps of when the user generated recipes and setting that as the button text
                 //Then Linking each button to retrieve the recipe generated and display it using TopRecipes Frame
                 for (int i = 0; i<size; i++) {
                     JButton entry = new JButton(time.get(i));
-
                     entry.setMaximumSize(new Dimension(Integer.MAX_VALUE, 25));
                     entry.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-                    buttonPanel.add(entry);
                     buttonPanel.add(Box.createVerticalStrut(5));
+                    buttonPanel.add(entry);
                     int finalI = i;
                     entry.addActionListener(e -> {
-                        MongoConnectionDemo.makeRecipe(user, finalI);
+                        MongoMealDB.makeRecipe(user, finalI);
                         dispose();
                     });
                 };
@@ -88,8 +88,8 @@ public class HistoryFrame extends JFrame {
 
         JButton back = new JButton("Back");
         back.addActionListener(e -> {
+            new MealDBSwingApp.InputFrame(user).setVisible(true);
             dispose();
-            new MealPreferences(user);
         });
 
         JPanel bottom = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -98,7 +98,6 @@ public class HistoryFrame extends JFrame {
 
         buttonPanel.setBorder(null);
         JScrollPane scrollPane = new JScrollPane(buttonPanel);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setBorder(null);
         setLocationRelativeTo(null);
         add(scrollPane, BorderLayout.CENTER);

@@ -1,7 +1,7 @@
 package view;
 
 import entity.RegularUser;
-import org.example.MealPreferences;
+import view.MealPreferences;
 
 import javax.swing.*;
 import java.awt.*;
