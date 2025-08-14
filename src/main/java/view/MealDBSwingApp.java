@@ -13,14 +13,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.List;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import entity.RegularUser;
-import app.Main;
 import org.example.MongoMealDB;
-import view.ApiChoiceFrame;
+
 import javax.swing.SwingUtilities;
 
 /**
@@ -278,7 +276,7 @@ public class MealDBSwingApp {
                             JOptionPane.showMessageDialog(InputFrame.this, "No recipes matched your criteria.",
                                     "No results", JOptionPane.INFORMATION_MESSAGE);
                         } else {
-                            new ResultsFrame(recipes, /*isSurprise*/ false).setVisible(true);
+                            new ResultsFrame(recipes, /*isSurprise*/ false, user).setVisible(true);
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace();
@@ -308,7 +306,7 @@ public class MealDBSwingApp {
                 @Override protected void done() {
                     try {
                         Recipe r = get();
-                        new ResultsFrame(List.of(r), /*isSurprise*/ true).setVisible(true);
+                        new ResultsFrame(List.of(r), /*isSurprise*/ true, user).setVisible(true);
                     } catch (Exception ex) {
                         ex.printStackTrace();
                         JOptionPane.showMessageDialog(InputFrame.this,
@@ -354,7 +352,7 @@ public class MealDBSwingApp {
 
     // ---------- Frame 2: Results ----------
     public static class ResultsFrame extends JFrame {
-        public ResultsFrame(List<Recipe> recipes, boolean isSurprise) {
+        public ResultsFrame(List<Recipe> recipes, boolean isSurprise, RegularUser user) {
             super(isSurprise ? "Surprise Recipe" : "Top Recipes");
             setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             setSize(1000, 700);
@@ -372,6 +370,19 @@ public class MealDBSwingApp {
             for (Recipe r : recipes) {
                 columns.add(makeRecipeCard(r, isSurprise));
             }
+
+            JButton back = new JButton("Back to Meal Preferences");
+            back.addActionListener(e -> {
+                dispose();
+                new MealDBSwingApp.InputFrame(user).setVisible(true);;
+            });
+
+            JPanel bottom = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            bottom.add(back);
+            add(bottom, BorderLayout.SOUTH);
+            setLocationRelativeTo(null);
+            setVisible(true);
+
             JScrollPane scroll = new JScrollPane(columns);
             scroll.getVerticalScrollBar().setUnitIncrement(16);
             root.add(scroll, BorderLayout.CENTER);
