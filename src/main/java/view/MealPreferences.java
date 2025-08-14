@@ -1,8 +1,7 @@
-package org.example;
+package view;
 
-import app.Main; // only used if you keep other navs; safe to keep
 import entity.RegularUser;
-import view.*;
+import org.example.MongoConnectionDemo;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
