@@ -27,8 +27,6 @@ import java.time.LocalDateTime;
 import static com.mongodb.client.model.Filters.eq;
 
 public class MongoConnectionDemo {
-    public static void main(String[] args) {
-    }
 
     public static void newuser(String username, String passcode) {
         String connectionString = "mongodb+srv://cx33366:Password@cluster0.wdexumy.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
