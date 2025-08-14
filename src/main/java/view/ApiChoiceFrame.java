@@ -2,7 +2,6 @@ package view;
 
 import app.Main;
 import entity.RegularUser;
-import org.example.MealPreferences;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -106,7 +105,7 @@ public class ApiChoiceFrame extends JFrame {
 //package view;
 //
 //import entity.RegularUser;
-//import org.example.MealPreferences;
+//import view.MealPreferences;
 //
 //import javax.swing.*;
 //import javax.swing.border.EmptyBorder;
